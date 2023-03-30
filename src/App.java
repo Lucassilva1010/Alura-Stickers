@@ -13,14 +13,17 @@ public class App {
        
         
             // 1- Fazer uma conexão Http para manipular os dados
-            String url = "https://raw.githubusercontent.com/alura-cursos/imersao-java-2-api/main/TopMovies.json";
+            //ApI da MDB
+                //String url = "https://raw.githubusercontent.com/alura-cursos/imersao-java-2-api/main/TopMovies.json";
+            //API da NASA
+                //String url = "https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY";
+            String url = "https://raw.githubusercontent.com/alura-cursos/imersao-java-2-api/main/NASA-APOD.json";
             URI endereco =URI.create(url);
             HttpClient Client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder(endereco).GET().build(); 
             HttpResponse<String> response = Client.send(request, BodyHandlers.ofString());
                 String body = response.body();
-                
-
+               
 
             // 2 - Separar os dados vindos da API(titulo, poster, classificação)
                 JsonParse parse = new JsonParse();
@@ -28,18 +31,24 @@ public class App {
               
             // Exibir e manipular os dados 
             var geradora = new GeradoraDeFiguras();
-            for (Map<String,String> filme : listaDeFilmes) {
-                
-                var urlImagem =filme.get("image");
+            for (int i=0; i<listaDeFilmes.size();i++) {
+                Map<String,String> filme = listaDeFilmes.get(i);
+
+                var urlImagem =
+                    //filme.get("image") // Esse é usado para pegar o do MDB, esse são as referencias dos LINK
+                   filme.get("url")// Esse usa as referencias da API da nasa e Busca as Imagens
+                    .replaceAll("(@+)(.*).jpg$", "$1.jpg");
+
                 var titulo = filme.get("title");
 
                 InputStream inputurl = new URL(urlImagem).openStream();
-                String nomeArquivo = titulo+".png";
-               
-
-                
+                String nomeArquivo = "imagens/"+titulo.replace(":", "-")+".png";
+                              
                 geradora.Cira(inputurl,nomeArquivo);
 
+                System.out.println(titulo);
+                System.out.println();
+ 
 
 
                 
