@@ -7,12 +7,12 @@ import java.util.regex.Matcher;
 
 
 public class JsonParse {
-    private static final Pattern REGEX_ITEMS = Pattern.compile(".*\\[(.+)\\].");
+    private static final Pattern REGEX_ITEMS = Pattern.compile(".*\\[(.+)\\].*");
     private static final Pattern REGEX_ATRIBUTOS_JSON = Pattern.compile( "\"(.+?)\":\"(.*?)\"");
 
     List<Map<String,String>>parse(String json){
 
-
+        System.out.println(json);
                 Matcher matcher = REGEX_ITEMS.matcher(json);
                 if (!matcher.find()) {
     
