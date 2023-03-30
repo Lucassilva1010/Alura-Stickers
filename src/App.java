@@ -1,52 +1,38 @@
 import java.io.InputStream;
-import java.net.URI;
 import java.net.URL;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.net.http.HttpResponse.BodyHandlers;
 import java.util.List;
-import java.util.Map;
+
 
 public class App {
     public static void main(String[] args) throws Exception {
        
-        
             // 1- Fazer uma conexão Http para manipular os dados
             //ApI da MDB
-                //String url = "https://raw.githubusercontent.com/alura-cursos/imersao-java-2-api/main/TopMovies.json";
+            String url = "https://raw.githubusercontent.com/alura-cursos/imersao-java-2-api/main/MostPopularMovies.json";
+            ExtratorDeConteudo extrator = new ExtratorDeConteudoImdb();    
             //API da NASA
-                //String url = "https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY";
-            String url = "https://raw.githubusercontent.com/alura-cursos/imersao-java-2-api/main/NASA-APOD.json";
-            URI endereco =URI.create(url);
-            HttpClient Client = HttpClient.newHttpClient();
-            HttpRequest request = HttpRequest.newBuilder(endereco).GET().build(); 
-            HttpResponse<String> response = Client.send(request, BodyHandlers.ofString());
-                String body = response.body();
+            //String url = "https://raw.githubusercontent.com/alura-cursos/imersao-java-2-api/main/NASA-APOD.json";
+            //ExtratorDeConteudo extrator = new ExtratorDeConteudoNasa();
+           
+            var http = new ClienteHttp();
+            
+            String json = http.buscaDados(url);
                
-
-            // 2 - Separar os dados vindos da API(titulo, poster, classificação)
-                JsonParse parse = new JsonParse();
-             List<Map<String, String>> listaDeFilmes = parse.parse(body);
-              
             // Exibir e manipular os dados 
+            
+            List<Conteudo> conteudos = extrator.ExtraiConteudos(json);
+
             var geradora = new GeradoraDeFiguras();
-            for (int i=0; i<listaDeFilmes.size();i++) {
-                Map<String,String> filme = listaDeFilmes.get(i);
+            
+            for (int i=0; i<conteudos.size();i++) {
+               Conteudo conteudo = conteudos.get(i);
 
-                var urlImagem =
-                    //filme.get("image") // Esse é usado para pegar o do MDB, esse são as referencias dos LINK
-                   filme.get("url")// Esse usa as referencias da API da nasa e Busca as Imagens
-                    .replaceAll("(@+)(.*).jpg$", "$1.jpg");
-
-                var titulo = filme.get("title");
-
-                InputStream inputurl = new URL(urlImagem).openStream();
-                String nomeArquivo = "imagens/"+titulo.replace(":", "-")+".png";
+                InputStream inputurl = new URL(conteudo.getUrlImagem()).openStream();
+                String nomeArquivo = "imagens/"+conteudo.getTiulo()+".png";
                               
                 geradora.Cira(inputurl,nomeArquivo);
 
-                System.out.println(titulo);
+                System.out.println(conteudo.getTiulo());
                 System.out.println();
  
 
