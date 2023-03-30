@@ -1,4 +1,6 @@
+import java.io.InputStream;
 import java.net.URI;
+import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -25,10 +27,23 @@ public class App {
              List<Map<String, String>> listaDeFilmes = parse.parse(body);
               
             // Exibir e manipular os dados 
-
+            var geradora = new GeradoraDeFiguras();
             for (Map<String,String> filme : listaDeFilmes) {
                 
-                    System.out.println("\u001b[1m TOP: \u001b[m"+filme.get("rank"));
+                var urlImagem =filme.get("image");
+                var titulo = filme.get("title");
+
+                InputStream inputurl = new URL(urlImagem).openStream();
+                String nomeArquivo = titulo+".png";
+               
+
+                
+                geradora.Cira(inputurl,nomeArquivo);
+
+
+
+                
+                   /*  System.out.println("\u001b[1m TOP: \u001b[m"+filme.get("rank"));
                     System.out.println("\u001b[1m Titulo: \u001b[m"+filme.get("title"));
                     System.out.println("\u001b[1m Subtitulo: \u001b[m"+filme.get("fullTitle"));
                     System.out.println("\u001b[1m Ano do Filme: \u001b[m"+filme.get("year"));
@@ -36,7 +51,7 @@ public class App {
                     System.out.println("\u001b[1m Atores: \u001b[m"+filme.get("crew"));
                     System.out.println("\u001b[1m Classificação: \u001b[m"+filme.get("imDbRating"));
                     System.out.println("\u001b[1m Numero de pessoas que votaram: \u001b[m"+filme.get("imDbRatingCount"));
-                    System.out.println();
+                    System.out.println();*/
                 } 
             }  
 
